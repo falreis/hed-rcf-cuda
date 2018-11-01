@@ -1,0 +1,6 @@
+#view gpu usage
+nvidia-smi -l 1
+
+#view process using gpu memory
+sudo fuser -v /dev/nvidia*
+

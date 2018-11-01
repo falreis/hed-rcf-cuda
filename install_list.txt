@@ -1,0 +1,109 @@
+## PROTOBUF ##
+
+wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
+#unzip protobuf
+cd protobuf-2.5.0/
+#wget https://raw.githubusercontent.com/google/protobuf/master/src/google/protobuf/stubs/atomicops_internals_generic_gcc.h -P src/google/protobuf/stubs/ 
+./configure
+make
+make check
+sudo make install
+export LD_LIBRARY_PATH=/usr/local/lib
+protoc --version
+
+
+## APT-GET ##
+
+sudo apt-get install --no-install-recommends libboost-all-dev
+sudo apt-get install libgflags-dev libgoogle-glog-dev libhdf5-serial-dev libhdf5-dev \
+	libopenblas-dev python-opencv libopencv-dev libleveldb-dev libgflags-dev libgoogle-glog-dev \
+	liblmdb-dev libsnappy-dev libatlas-base-dev cmake libpng-dev libopenexr-dev libjasper-dev \
+	libprotobuf-dev protobuf-compiler python-protobuf doxygen python-dev python-pip libhdf5-serial-dev 
+
+cd /usr/lib/x86_64-linux-gnu
+sudo ln -sf libhdf5_serial.so libhdf5.so
+sudo ln -sf libhdf5_serial_hl.so libhdf5_hl.so
+
+#sudo apt-get install libtiff-tools
+
+## LIBTIFF4 ##
+
+wget http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb
+sudo dpkg -i libtiff4_3.9.7-2ubuntu1_amd64.deb
+
+
+## CONDA ##
+
+#substituir pela versão adequada
+conda env create -f hed16.yml
+source activate hed16
+
+
+## OPENCV + LIBTIFF4 ## 
+
+sudo apt-get install libgles2-mesa-dev qtbase5-dev
+
+wget https://github.com/opencv/opencv/archive/3.4.2.zip
+unzip 3.4.2.zip
+rm 3.4.2.zip
+mv opencv-3.4.2 OpenCV
+cd OpenCV
+mkdir build
+cd build
+
+cmake \
+-DWITH_QT=ON \
+-DWITH_OPENGL=ON \
+-DFORCE_VTK=ON \
+-DWITH_TBB=ON \
+-DWITH_GDAL=ON \
+-DWITH_XINE=ON \
+-DBUILD_EXAMPLES=ON \
+-DENABLE_PRECOMPILED_HEADERS=OFF \
+-DBUILD_TIFF=ON \
+-DWITH_1394=OFF \
+-DENABLE_SSSE3=ON \
+-DENABLE_AVX=ON \
+-DWITH_CUBLAS=OFF \
+-DWITH_CUDA=OFF \
+-DWITH_CUFFT=OFF \
+-DWITH_FFMPEG=ON \
+-DWITH_TBB=ON \
+-DWITH_OPENMP=ON \
+-DWITH_IPP=ON \
+../
+
+make -j4
+sudo make install
+sudo ldconfig -v
+locate libopencv_core.so.3.4
+#cd locate
+sudo ldconfig -v
+
+sudo cp /usr/lib/x86_64-linux-gnu/libICE.so.6 /usr/lib/x86_64-linux-gnu/libICE.so
+sudo cp /usr/lib/x86_64-linux-gnu/libSM.so.6 /usr/lib/x86_64-linux-gnu/libSM.so
+
+
+## CAFFE ## 
+
+mkdir build
+cd build
+cmake ..
+cd ..
+make all
+make pycaffe
+make test
+make runtest
+
+
+## ~/.BASHRC ##
+
+#adicionar ao ~/.bashrc
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:usr/local/lib:~/anaconda2/lib:/home/falreis/Me/hed/python/caffe/
+export C_INCLUDE_PATH=/usr/include/python2.7
+
+
+## CONDA ##
+
+conda install -c defaults protobuf libprotobuf
+
